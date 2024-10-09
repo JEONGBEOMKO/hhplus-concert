@@ -16,6 +16,8 @@
 - 자료들을 리드미에 작성 후 PR링크 제출 ( 기본 패키지 구조, 서버 Configuration 등 )
 
 ---
-### **`STEP 05`** 
-### PR 링크
+### **`STEP 05 PR 링크`** 
 - [시퀀스 다이어그램](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/sequence-diagram.md)
+- [마일스톤](https://github.com/users/JEONGBEOMKO/projects/12/views/1)
+
+### **`STEP 06 PR 링크`**
