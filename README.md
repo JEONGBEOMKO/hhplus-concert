@@ -1,7 +1,5 @@
-# hhplus-concert
-콘서트 예약 서비스
-
-
+# 콘서트 예약 서비스
+---
 ### **`STEP 05`**
 
 - 시나리오 선정 및 프로젝트 Milestone 제출
@@ -18,4 +16,6 @@
 - 자료들을 리드미에 작성 후 PR링크 제출 ( 기본 패키지 구조, 서버 Configuration 등 )
 
 ---
+### **`STEP 05`** 
+### PR 링크
 - [시퀀스 다이어그램](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/sequence-diagram.md)
