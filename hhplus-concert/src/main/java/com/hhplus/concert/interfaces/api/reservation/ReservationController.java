@@ -1,15 +1,36 @@
 package com.hhplus.concert.interfaces.api.reservation;
 
+import com.hhplus.concert.interfaces.api.reservation.dto.AvailableSeats;
 import com.hhplus.concert.interfaces.api.reservation.dto.Reservation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
-@RequestMapping("/reservation")
+@RequestMapping("/reservations")
 public class ReservationController {
+
+    // 예약 가능 날짜 조회 API
+    @GetMapping("/available-dates")
+    public ResponseEntity<List<String>> getAvailableDates() {
+        // 더미 값으로 반환할 예약 가능 날짜
+        List<String> availableDates = Arrays.asList("2024-10-15", "2024-10-16", "2024-10-17");
+        return ResponseEntity.ok(availableDates);
+    }
+
+    // 예약 가능 좌석 조회 API
+    @GetMapping("/available-seats")
+    public ResponseEntity<AvailableSeats> getAvailableSeats(@RequestParam String date) {
+        // 더미 값으로 반환할 예약 가능 좌석
+        List<String> availableSeats = Arrays.asList("좌석 1", "좌석 2", "좌석 3");
+        AvailableSeats availableSeatsDto = new AvailableSeats(date, availableSeats);
+        return ResponseEntity.ok(availableSeatsDto);
+    }
+
 
     // 좌석 예약 요청 API
     @PostMapping("/users/{userId}/reserve")
