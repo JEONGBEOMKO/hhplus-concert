@@ -21,3 +21,5 @@
 - [마일스톤](https://github.com/users/JEONGBEOMKO/projects/12/views/1)
 
 ### **`STEP 06 PR 링크`**
+- [API 명세](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/api_specs.md)
+- [Swagger 이용한 API 명세](https://github.com/JEONGBEOMKO/hhplus-concert/tree/main/hhplus-concert/src/docs/swagger)
