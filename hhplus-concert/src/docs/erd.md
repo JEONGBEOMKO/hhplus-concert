@@ -13,6 +13,7 @@ erDiagram
       string user_id FK
       int queue_order
       int time_remaining
+      datetime expiration_time
     }
 
     %% Reservations 테이블: 유저가 예약한 좌석과 날짜 정보 관리
@@ -21,6 +22,7 @@ erDiagram
       string user_id FK
       string seat_id
       date date
+      datetime expiration_time
     }
 
     %% Payments 테이블: 결제 내역 관리
@@ -46,7 +48,6 @@ erDiagram
 - **필드**:
     - `user_id`: **PK** (Primary Key), 유저를 식별하는 고유 ID
     - `name`: 유저의 이름
-    - `email`: 유저의 이메일 주소
     - `balance`: 유저의 현재 잔액
 
 **설명**:
@@ -64,6 +65,7 @@ erDiagram
     - `user_id`: **논리적 FK**, 토큰이 발급된 유저를 식별
     - `queue_order`: 대기열에서 유저의 순서
     - `time_remaining`: 대기열에서 유저가 남은 시간
+    - `expiration_time`: 대기열 토큰의 만료 시간
 
 **설명**:
 
@@ -80,10 +82,13 @@ erDiagram
     - `user_id`: **논리적 FK**, 예약한 유저를 식별
     - `seat_id`: 예약된 좌석의 ID
     - `date`: 예약한 날짜
+    - `expiration_time`: 임시 예약의 만료 시간
 
 **설명**:
 
-- **Reservations 테이블**은 유저가 좌석을 예약한 내역을 관리합니다. 예약한 좌석(`seat_id`)과 예약 날짜(`date`)를 함께 저장하여 좌석 예약을 추적합니다. 좌석이 임시 예약되거나 확정되었을 때, 이 테이블에서 관리되며 유저가 언제, 어느 좌석을 예약했는지 기록합니다.
+- **Reservations 테이블**은 유저가 좌석을 예약한 내역을 관리합니다. 예약한 좌석(`seat_id`)과 예약 날짜(`date`)를 함께 저장하여 좌석 예약을 추적합니다. 
+- 좌석이 임시 예약되었을 경우 expiration_time을 통해 만료 시간까지 유효하게 예약을 유지하고, 만료 후에는 자동으로 예약이 해제됩니다. 
+- 확정된 예약도 이 테이블에서 관리되며, 유저가 언제, 어느 좌석을 예약했는지 기록됩니다.
 
 ---
 
@@ -114,9 +119,12 @@ erDiagram
 
 2. **Queue 테이블**: 사용자의 대기열 정보를 관리합니다.
     - `user_id`를 통해 논리적으로 유저와 연결되며, 토큰 발급 및 대기열 검증 시 활용됩니다.
+    - `expiration_time`를 통해 대기열 토큰 만료 시간도 관리
 
 3. **Reservations 테이블**: 예약된 좌석과 날짜를 관리합니다.
     - 좌석 번호(`seat_id`)와 날짜(`date`)를 저장하며, 유저가 특정 날짜에 좌석을 예약한 내역을 기록합니다.
+    - 임시 예약과 확정 예약을 처리
+    - `expiration_time`를 통해 임시 예약의 만료 시간을 관리
 
 4. **Payments 테이블**: 결제 정보를 관리합니다.
     - 예약(`res_id`)과 연결된 결제 정보를 저장하며, 유저가 좌석 예약에 대해 결제한 내역을 추적합니다.
