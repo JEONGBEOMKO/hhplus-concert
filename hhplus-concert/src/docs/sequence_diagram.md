@@ -11,16 +11,16 @@ sequenceDiagram
 
     User->>TokenAPI: 토큰 발급 요청 (UUID)
     TokenAPI->>QueueService: 대기열 정보 생성 (UUID)
-    QueueService->>DB: 유저 정보 및 대기열 정보 저장 (대기 순서, 잔여 시간)
+    QueueService->>DB: 유저 정보 및 대기열 정보 저장 (대기 순서, 잔여 시간, expiration_time)
     DB-->>QueueService: 저장 완료
 
     alt 토큰 발급 성공
-        QueueService-->>TokenAPI: 토큰 발급 (토큰, 대기 순서, 잔여 시간)
+        QueueService-->>TokenAPI: 토큰 발급 (토큰, 대기 순서, 잔여 시간, expiration_time)
         TokenAPI-->>User: 토큰 발급 완료
         opt 대기열 정보 확인 (폴링 방식)
             User->>TokenAPI: 대기열 정보 확인 요청
             TokenAPI->>QueueService: 대기열 정보 조회
-            QueueService-->>TokenAPI: 대기열 정보 반환 (잔여 시간, 대기 순서)
+            QueueService-->>TokenAPI: 대기열 정보 반환 (잔여 시간, 대기 순서, expiration_time)
             TokenAPI-->>User: 대기열 정보 반환
         end
     else 토큰 발급 실패
@@ -93,10 +93,10 @@ sequenceDiagram
         ReservationAPI-->>User: 예외 처리 (토큰이 유효하지 않음)
     else 토큰 유효성 성공
         ReservationAPI->>ReservationService: 좌석 임시 배정 요청
-        ReservationService->>DB: 좌석 임시 배정 저장
-        DB-->>ReservationService: 저장 완료
+        ReservationService->>DB: 좌석 임시 배정 저장 (5분 유효 기간 설정)
+        DB-->>ReservationService: 저장 완료 (expiration_time 설정)
         ReservationService-->>ReservationAPI: 좌석 임시 배정 완료
-        ReservationAPI-->>User: 좌석 임시 배정 완료 (5분 유효)
+        ReservationAPI-->>User: 좌석 임시 배정 완료 (expiration_time: 5분)
     end
 ```
 
@@ -173,11 +173,11 @@ sequenceDiagram
         alt 잔액 부족
             PaymentAPI-->>User: 결제 실패 (잔액 부족)
         else 잔액 충분
-            PaymentAPI->>ReservationService: 좌석 예약 확정 요청
+            PaymentAPI->>ReservationService: 좌석 예약 확정 요청 (expiration_time 무시)
             ReservationService->>DB: 좌석 예약 확정
             DB-->>ReservationService: 저장 완료
             ReservationService-->>PaymentAPI: 좌석 예약 확정 완료
-            PaymentAPI-->>User: 결제 성공 및 좌석 예약 완료
+            PaymentAPI-->>User: 결제 성공 및 좌석 예약 완료 (expiration_time 무시됨)
             PaymentAPI->>QueueService: 대기열 토큰 만료 요청
             QueueService->>DB: 대기열 토큰 만료 처리
             DB-->>QueueService: 토큰 만료 처리 완료
