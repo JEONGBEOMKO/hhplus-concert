@@ -100,7 +100,31 @@ sequenceDiagram
     end
 ```
 
-## 잔액 충전 / 조회 API
+## 잔액 충전 API
+```mermaid
+sequenceDiagram
+    participant User
+    participant BalanceAPI
+    participant QueueService
+    participant BalanceService
+    participant DB
+
+    User->>BalanceAPI: 잔액 충전 요청
+    BalanceAPI->>QueueService: 토큰 유효성 검증 요청
+    QueueService-->>BalanceAPI: 토큰 유효성 검증 반환
+
+    alt 토큰 유효성 실패
+        BalanceAPI-->>User: 예외 처리 (토큰이 유효하지 않음)
+    else 토큰 유효성 성공
+        BalanceAPI->>BalanceService: 잔액 충전 요청
+        BalanceService->>DB: 충전 내역 저장
+        DB-->>BalanceService: 충전 완료
+        BalanceService-->>BalanceAPI: 충전 완료 결과 반환
+        BalanceAPI-->>User: 잔액 충전 완료
+    end
+```
+
+## 잔액 조회 API
 ```mermaid
 sequenceDiagram
     participant User
@@ -121,22 +145,6 @@ sequenceDiagram
         DB-->>BalanceService: 잔액 정보 반환
         BalanceService-->>BalanceAPI: 잔액 정보 반환
         BalanceAPI-->>User: 잔액 조회 결과 반환
-    end
-
-    opt 잔액 충전
-        User->>BalanceAPI: 잔액 충전 요청
-        BalanceAPI->>QueueService: 토큰 유효성 검증 요청
-        QueueService-->>BalanceAPI: 토큰 유효성 검증 반환
-
-        alt 토큰 유효성 실패
-            BalanceAPI-->>User: 예외 처리 (토큰이 유효하지 않음)
-        else 토큰 유효성 성공
-            BalanceAPI->>BalanceService: 잔액 충전 요청
-            BalanceService->>DB: 충전 내역 저장
-            DB-->>BalanceService: 충전 완료
-            BalanceService-->>BalanceAPI: 충전 완료 결과 반환
-            BalanceAPI-->>User: 잔액 충전 완료
-        end
     end
 ```
 
@@ -173,6 +181,8 @@ sequenceDiagram
             PaymentAPI->>QueueService: 대기열 토큰 만료 요청
             QueueService->>DB: 대기열 토큰 만료 처리
             DB-->>QueueService: 토큰 만료 처리 완료
+            QueueService-->>PaymentAPI: 토큰 만료 처리 완료
+            PaymentAPI-->>User: 대기열 토큰 만료 완료
         end
     end
 ```
