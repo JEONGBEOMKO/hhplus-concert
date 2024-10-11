@@ -17,7 +17,7 @@
 
 ---
 ### **`STEP 05 PR 링크`** 
-- [시퀀스 다이어그램](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/sequence-diagram.md)
+- [시퀀스 다이어그램]([https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/sequence-diagram.md](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/sequence_diagram.md))
 - [마일스톤](https://github.com/users/JEONGBEOMKO/projects/12/views/1)
 
 ### **`STEP 06 PR 링크`**
