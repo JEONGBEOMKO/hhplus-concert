@@ -22,7 +22,9 @@
 
 ### **`STEP 06 PR 링크`**
 - [API 명세](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/api_specs.md)
-- [API 명세(Swagger)](https://github.com/JEONGBEOMKO/hhplus-concert/tree/main/hhplus-concert/src/docs/swagger)
+- [Swagger를 이용한 API 명세](https://github.com/JEONGBEOMKO/hhplus-concert/tree/main/hhplus-concert/src/docs/swagger)
+<img width="1482" alt="api_specs" src="https://github.com/user-attachments/assets/aabb86cd-d840-4dc0-bfdb-a26ba83cf6f0">
+
 
 ---
 ### **`패키지 구조`**
