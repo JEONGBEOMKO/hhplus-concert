@@ -25,4 +25,4 @@
 - [Swagger를 이용한 API 명세](https://github.com/JEONGBEOMKO/hhplus-concert/tree/main/hhplus-concert/src/docs/swagger)
 <img width="1482" alt="api_specs" src="https://github.com/user-attachments/assets/aabb86cd-d840-4dc0-bfdb-a26ba83cf6f0">
 
-- [패키지 구조](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/architecture.md)
+- [패키지 구조 설계](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/architecture.md)
