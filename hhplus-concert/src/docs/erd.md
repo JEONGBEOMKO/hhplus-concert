@@ -36,6 +36,7 @@ erDiagram
         varchar position
         varchar seat_status
         dateTime created_at
+        datetime updated_at
     }
 
 %% reservations 테이블: 예약 정보 관리
