@@ -72,14 +72,13 @@ erDiagram
     }
 
 %% 테이블 간 관계
-    USERS ||--o{ RESERVATIONS : "예약을 만듦"
-    CONCERTS ||--o{ CONCERT_SCHEDULES : "일정을 포함함"
-    CONCERT_SCHEDULES ||--o{ SEATS : "좌석을 포함함"
-    SEATS ||--o{ RESERVATIONS : "예약에 사용됨"
-    RESERVATIONS ||--o{ PAYMENTS : "결제와 연결됨"
-    USERS ||--o{ QUEUE : "대기열에 참여함"
-    USERS ||--o{ PAYMENTS : "결제를 진행함"
-
+    USERS ||--o{ RESERVATIONS : "has reservation"
+    CONCERTS ||--o{ CONCERT_SCHEDULES : "includes schedule"
+    CONCERT_SCHEDULES ||--o{ SEATS : "has seats"
+    SEATS ||--o{ RESERVATIONS : "is used in reservation"
+    RESERVATIONS ||--o{ PAYMENTS : "is linked to payment"
+    USERS ||--o{ QUEUE : "participates in queue"
+    USERS ||--o{ PAYMENTS : "makes payment"
 ```
 ---
 ## 테이블 설명
