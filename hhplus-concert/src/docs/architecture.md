@@ -5,63 +5,75 @@ hhplusconcert/
 ├── src/main/java/com/hhplu/
 │   └── hhplusconcert/
 │       ├── application/                  
-│       │   └── facade/                   
-│       │       ├── BalanceFacade.java    
-│       │       ├── PaymentFacade.java    
-│       │       ├── QueueFacade.java      
-│       │       └── ReservationFacade.java
-│       ├── domain/                       
+│       │   └── usecase/                  
+│       │       ├── GenerateQueueTokenUseCase.java   
+│       │       ├── GetAvailableDatesUseCase.java    
+│       │       ├── GetAvailableSeatsUseCase.java    
+│       │       ├── ReserveSeatUseCase.java          
+│       │       ├── ChargeBalanceUseCase.java        
+│       │       ├── GetBalanceUseCase.java           
+│       │       └── PaymentProcessingUseCase.java    
+│       ├── domain/                      
 │       │   ├── balance/                  
-│       │   ├── payment/                 
-│       │   ├── queue/                   
-│       │   └── reservation/             
-│       ├── infrastructure/              
-│       └── interfaces/                  
+│       │   ├── payment/                  
+│       │   ├── queue/                    
+│       │   ├── reservation/              
+│       │   └── concert/                  
+│       ├── infrastructure/               
+│       │   └── repository/               
+│       │       ├── BalanceRepository.java   
+│       │       ├── PaymentRepository.java   
+│       │       ├── QueueRepository.java     
+│       │       ├── ReservationRepository.java
+│       │       └── ConcertRepository.java   
+│       └── interfaces/                   
 │           └── api/                      
 │               ├── balance/              
-│               │   ├── BalanceController.java 
+│               │   ├── BalanceController.java   
 │               │   └── dto/              
-│               │       ├── Balance.java  
-│               │       └── ChargeRequest.java 
+│               │       ├── Balance.java        
+│               │       └── ChargeRequest.java  
 │               ├── payment/              
-│               │   ├── PaymentController.java 
+│               │   ├── PaymentController.java   
 │               │   └── dto/              
-│               │       └── Payment.java  
+│               │       └── Payment.java        
 │               ├── queue/                
-│               │   ├── QueueController.java   
+│               │   ├── QueueController.java     
 │               │   └── dto/              
-│               │       └── Queue.java    
-│               └── reservation/          
-│                   ├── ReservationController.java 
+│               │       └── Queue.java          
+│               ├── reservation/          
+│               │   ├── ReservationController.java  
+│               │   └── dto/              
+│               │       ├── Reservation.java     
+│               │       └── AvailableSeats.java  
+│               └── concert/              
+│                   ├── ConcertController.java   
 │                   └── dto/              
-│                       ├── Reservation.java    
-│                       └── AvailableSeats.java 
-├── resources/
-│   └── application.yml  
-└── test/                
+│                       ├── Concert.java         
+│                       └── ConcertSchedule.java 
+├── resources/                            
+│   └── application.yml                   
+└── test/                                 
+
 ```
 
-## 패키지 설명
-1. application/ 계층 (퍼사드 계층)
-   - BalanceFacade.java, PaymentFacade.java, QueueFacade.java, ReservationFacade.java: 각 기능(잔액 관리, 결제, 대기열, 예약)과 관련된 비즈니스 로직을 처리하는 계층입니다. 이 레이어에서는 유스케이스나 주요 기능들이 구현됩니다.
-   
-2. domain/ 계층 (도메인 레이어)
-   - balance/, payment/, queue/, reservation/: 도메인 레이어는 비즈니스 로직의 핵심인 도메인 모델을 정의합니다. 아직 도메인 엔티티와 로직은 작성되지 않았으며, 이 계층에 추가될 예정입니다.
+## 패키지 구조 설명
 
-3. infrastructure/ 계층 (인프라스트럭처 레이어)
-   - DB 연동이나 외부 API와의 통신을 처리하는 레이어로, 리포지토리나 외부 통합과 관련된 클래스들이 작성될 예정입니다.
+1. **application**:
+    - API 요청을 처리하기 위한 비즈니스 로직을 담당하는 application 레이어입니다. 각 API 요청에 대한 로직을 담당하는 클래스를 **UseCase**로 분리하여 넣었습니다. 예를 들어 `GenerateQueueTokenUseCase.java`는 유저 대기열 토큰 발급에 대한 로직을 처리합니다.
+2. **domain**:
+    - 시스템의 핵심 비즈니스 로직을 포함하는 도메인 엔티티들을 정의하는 패키지입니다. 예를 들어, **concert** 패키지에는 콘서트와 관련된 엔티티가 포함되어 콘서트 정보를 관리합니다.
+3. **infrastructure**:
+    - DB 연동 및 외부 API 호출 같은 기술적 세부 사항을 처리하는 레이어입니다. 예를 들어 **repository** 클래스들이 여기에 위치하여 데이터베이스와 상호작용을 처리합니다.
+4. **interfaces**:
+    - 외부와의 통신을 처리하는 interfaces 레이어입니다. API 요청 및 응답을 처리하는 **Controller**와 **DTO**(Data Transfer Object)들이 이 레이어에 포함되어 있습니다.
+    - 각 기능에 맞는 API는 **balance**, **payment**, **queue**, **reservation**, **concert**로 나뉘어 관리되며, 각각의 DTO가 포함되어 있습니다.
+5. **resources**:
+    - 애플리케이션 설정 파일들이 포함된 디렉토리입니다. 여기에는 데이터베이스 설정, 서버 포트 설정 등 애플리케이션의 실행 환경 설정이 담긴 **application.yml** 파일이 있습니다.
+6. **test**:
+    - 애플리케이션의 테스트 코드가 작성되는 디렉토리입니다. 모든 유닛 테스트, 통합 테스트가 이 디렉토리 안에서 작성됩니다.
 
-4. interfaces/ 계층 (인터페이스 레이어)
-   - balance/, payment/, queue/, reservation/: 각 기능별로 API 컨트롤러와 DTO가 포함된 패키지입니다.
-     - BalanceController.java: 잔액 조회 및 충전 API 처리
-     - PaymentController.java: 결제 API 처리
-     - QueueController.java: 대기열 및 토큰 발급 API 처리
-     - ReservationController.java: 예약 관련 API 처리
-     - 각 패키지의 dto/ 디렉토리에는 각 API에서 사용되는 요청(Request)과 응답(Response) 데이터를 처리하는 DTO가 포함됩니다.
-
-5. resources/: 환경 설정 파일(application.yml)을 담고 있는 디렉토리입니다. 서버 포트, DB 연결 정보, 외부 API 연동 정보 등이 설정됩니다.
-
-6. test/: 테스트 코드를 작성하는 디렉토리입니다. 각 API와 비즈니스 로직에 대한 단위 테스트 및 통합 테스트를 여기서 작성합니다.
+이 패키지 구조는 각 API 요청을 처리하는 UseCase 클래스를 명시적으로 구분하여 유지보수성과 확장성을 높였습니다.
 
 ## 기술스택
 - **JDK 17**: 안정적인 장기 지원 버전(LTS)으로, 최신 기능을 제공하면서도 안정성을 보장하는 자바 개발 키트.
