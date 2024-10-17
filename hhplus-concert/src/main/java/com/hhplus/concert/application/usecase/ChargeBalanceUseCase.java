@@ -19,9 +19,21 @@ public class ChargeBalanceUseCase {
         User user =userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        user.setAmount(user.getAmount() + amount);
+        long newBalance = user.getAmount() + amount;
+
+        user.setAmount(newBalance);
         userRepository.save(user);
 
-        return new ChargeResponse(userId, user.getAmount());
+        return new ChargeResponse(userId, newBalance);
+    }
+
+    // 잔액 조회 메서드
+    public long getBalance(UUID userId) {
+        // 사용자 조회
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 현재 잔액 반환
+        return user.getAmount();
     }
 }
