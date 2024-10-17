@@ -2,12 +2,12 @@
 ---
 Swagger를 이용한 API 명세
 
-<img width="1360" alt="api_specs1" src="https://github.com/user-attachments/assets/ef5c958d-1fe4-455d-83f0-4a9cad98f4b2">
-<img width="1453" alt="api_specs2" src="https://github.com/user-attachments/assets/5038e192-aafc-4897-87e5-32355334478a">
-<img width="1427" alt="api_specs3" src="https://github.com/user-attachments/assets/4c3946ed-0db0-4a0a-addc-60e1330aeb76">
-<img width="1415" alt="api_specs4" src="https://github.com/user-attachments/assets/5a5b47da-6093-46ee-975e-6318216e6be9">
-<img width="1402" alt="api_specs5" src="https://github.com/user-attachments/assets/edf39818-d35f-493c-86e9-6f70744594d9">
-<img width="1401" alt="api_specs6" src="https://github.com/user-attachments/assets/36b31d13-b5cd-48c1-ae83-929a65c6aa05">
+<img width="1130" alt="api_specs1" src="https://github.com/user-attachments/assets/214f06b2-e0e8-4e90-83fd-f0b6b67c0ec7">
+<img width="1121" alt="api_specs2" src="https://github.com/user-attachments/assets/2793aa59-6425-4f2e-8b84-0e1751826f40">
+<img width="1144" alt="api_specs3" src="https://github.com/user-attachments/assets/e557148e-9d72-4d16-ab75-2fbeded10862">
+<img width="1134" alt="api_specs4" src="https://github.com/user-attachments/assets/6e7b912b-28a9-48c8-a362-005083fdfd14">
+<img width="1117" alt="api_specs5" src="https://github.com/user-attachments/assets/a051c1b8-eb5f-4376-ba99-17a084cf7981">
+
 
 ---
 ### **`STEP 05`**
