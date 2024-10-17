@@ -5,55 +5,71 @@ hhplusconcert/
 ├── src/main/java/com/hhplu/
 │   └── hhplusconcert/
 │       ├── application/                  
-│       │   └── usecase/                  
-│       │       ├── GenerateQueueTokenUseCase.java   
-│       │       ├── GetAvailableDatesUseCase.java    
-│       │       ├── GetAvailableSeatsUseCase.java    
-│       │       ├── ReserveSeatUseCase.java          
-│       │       ├── ChargeBalanceUseCase.java        
-│       │       ├── GetBalanceUseCase.java           
-│       │       └── PaymentProcessingUseCase.java    
-│       ├── domain/                      
-│       │   ├── balance/                  
-│       │   ├── payment/                  
-│       │   ├── queue/                    
+│       │   ├── usecase/                  
+│       │   │   ├── GenerateQueueTokenUseCase.java   
+│       │   │   ├── GetAvailableDatesUseCase.java    
+│       │   │   ├── GetAvailableSeatsUseCase.java    
+│       │   │   ├── ReserveSeatUseCase.java          
+│       │   │   ├── ChargeBalanceUseCase.java        
+│       │   │   ├── GetBalanceUseCase.java           
+│       │   │   ├── PaymentProcessingUseCase.java  
+│       │   │   ├── QueueProcessingScheduler.java   // 스케줄러의 역할을 확장하여 대기열 관리 및 만료 처리 등 모든 작업을 처리
+│       │   ├── dto/                    // Application 레이어 내에 DTO 패키지
+│       │   │   ├── request/            // Request DTO 패키지
+│       │   │   │   ├── QueueRequest.java
+│       │   │   │   ├── ConcertRequest.java
+│       │   │   │   ├── ReservationRequest.java
+│       │   │   │   ├── SeatRequest.java
+│       │   │   │   └── PaymentRequest.java
+│       │   │   ├── response/           // Response DTO 패키지
+│       │   │   │   ├── QueueResponse.java
+│       │   │   │   ├── ConcertResponse.java
+│       │   │   │   ├── ReservationResponse.java
+│       │   │   │   ├── SeatResponse.java
+│       │   │   │   └── PaymentResponse.java
+│       ├── domain/                       
+│       │   ├── user/                     
+│       │   │   └── User.java             
+│       │   ├── concert/                  
+│       │   │   └── Concert.java          
+│       │   ├── concertschedule/          
+│       │   │   └── ConcertSchedule.java  
+│       │   ├── seat/                     
+│       │   │   └── Seat.java             
 │       │   ├── reservation/              
-│       │   └── concert/                  
+│       │   │   └── Reservation.java      
+│       │   ├── queue/                    
+│       │   │   └── Queue.java            
+│       │   └── payment/                  
+│       │       └── Payment.java          
 │       ├── infrastructure/               
 │       │   └── repository/               
-│       │       ├── BalanceRepository.java   
-│       │       ├── PaymentRepository.java   
-│       │       ├── QueueRepository.java     
+│       │       ├── UserRepository.java   
+│       │       ├── ConcertRepository.java   
+│       │       ├── ConcertScheduleRepository.java   
+│       │       ├── SeatRepository.java   
 │       │       ├── ReservationRepository.java
-│       │       └── ConcertRepository.java   
+│       │       ├── QueueRepository.java   
+│       │       └── PaymentRepository.java 
 │       └── interfaces/                   
 │           └── api/                      
-│               ├── balance/              
-│               │   ├── BalanceController.java   
-│               │   └── dto/              
-│               │       ├── Balance.java        
-│               │       └── ChargeRequest.java  
-│               ├── payment/              
-│               │   ├── PaymentController.java   
-│               │   └── dto/              
-│               │       └── Payment.java        
-│               ├── queue/                
-│               │   ├── QueueController.java     
-│               │   └── dto/              
-│               │       └── Queue.java          
+│               ├── user/              
+│               │   ├── UserController.java  
+│               ├── concert/              
+│               │   ├── ConcertController.java  
+│               ├── concertschedule/      
+│               │   ├── ConcertScheduleController.java  
+│               ├── seat/                
+│               │   ├── SeatController.java   
 │               ├── reservation/          
 │               │   ├── ReservationController.java  
-│               │   └── dto/              
-│               │       ├── Reservation.java     
-│               │       └── AvailableSeats.java  
-│               └── concert/              
-│                   ├── ConcertController.java   
-│                   └── dto/              
-│                       ├── Concert.java         
-│                       └── ConcertSchedule.java 
+│               ├── queue/                
+│               │   ├── QueueController.java     
+│               ├── payment/              
+│               │   ├── PaymentController.java  
 ├── resources/                            
 │   └── application.yml                   
-└── test/                                 
+└── test/
 
 ```
 
