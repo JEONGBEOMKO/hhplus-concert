@@ -1,27 +1,32 @@
 package com.hhplus.concert.interfaces.api.queue;
 
-import com.hhplus.concert.interfaces.api.queue.dto.Queue;
+import com.hhplus.concert.application.dto.request.QueueRequest;
+import com.hhplus.concert.application.dto.response.QueueResponse;
+import com.hhplus.concert.application.usecase.GenerateQueueTokenUseCase;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-
 @RestController
-@RequestMapping("/queue")
+@RequestMapping("/api/queues")
 public class QueueController {
+    private final GenerateQueueTokenUseCase generateQueueTokenUseCase;
 
-    // 유저 대기열 토큰 발급
-    @PostMapping("/users/{userId}/token")
-    public ResponseEntity<Queue> generateQueueToken(@PathVariable Long userId){
-        Queue queueToken = new Queue(userId, "dummyTokenId", 1, 100, LocalDateTime.now().plusMinutes(5));
-        return ResponseEntity.ok(queueToken);
+    public QueueController(GenerateQueueTokenUseCase generateQueueTokenUseCase) {
+        this.generateQueueTokenUseCase = generateQueueTokenUseCase;
     }
 
-    // 유저 대기열 상태 조회 API
-    @GetMapping("/users/{userId}/token")
-    public ResponseEntity<Queue> getQueueStatus(@PathVariable Long userId) {
-        Queue queueToken = new Queue(userId, "dummyTokenId", 1, 60, LocalDateTime.now().plusMinutes(3));
-        return ResponseEntity.ok(queueToken);
+    // 유저 대기열 토큰 발급 API
+    @PostMapping("/generate-token")
+    public ResponseEntity<QueueResponse> generateQueueToken(@RequestBody QueueRequest queueRequest) {
+        QueueResponse response = generateQueueTokenUseCase.generateToken(queueRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    // 대기열 위치 조회 API
+    @GetMapping("/position/{token}")
+    public ResponseEntity<QueueResponse> getQueuePosition(@PathVariable String token) {
+        QueueResponse response = generateQueueTokenUseCase.getQueuePosition(token);
+        return ResponseEntity.ok(response);
     }
 }
