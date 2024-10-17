@@ -1,5 +1,15 @@
 # 콘서트 예약 서비스
 ---
+Swagger를 이용한 API 명세
+
+<img width="1360" alt="api_specs1" src="https://github.com/user-attachments/assets/ef5c958d-1fe4-455d-83f0-4a9cad98f4b2">
+<img width="1453" alt="api_specs2" src="https://github.com/user-attachments/assets/5038e192-aafc-4897-87e5-32355334478a">
+<img width="1427" alt="api_specs3" src="https://github.com/user-attachments/assets/4c3946ed-0db0-4a0a-addc-60e1330aeb76">
+<img width="1415" alt="api_specs4" src="https://github.com/user-attachments/assets/5a5b47da-6093-46ee-975e-6318216e6be9">
+<img width="1402" alt="api_specs5" src="https://github.com/user-attachments/assets/edf39818-d35f-493c-86e9-6f70744594d9">
+<img width="1401" alt="api_specs6" src="https://github.com/user-attachments/assets/36b31d13-b5cd-48c1-ae83-929a65c6aa05">
+
+---
 ### **`STEP 05`**
 
 - 시나리오 선정 및 프로젝트 Milestone 제출
