@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    generate-ddl: true
+    defer-datasource-initialization: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/concert?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC  # MySQL URL? ??
+    username: testuser
+    password: 1234!
+    driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL JDBC ???? ??
