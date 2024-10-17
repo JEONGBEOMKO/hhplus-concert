@@ -24,7 +24,6 @@ Swagger를 이용한 API 명세
 - ERD 설계 자료 제출
 - API 명세 및 Mock API 작성
 - 자료들을 리드미에 작성 후 PR링크 제출 ( 기본 패키지 구조, 서버 Configuration 등 )
-
 ---
 ### **`STEP 05 PR 링크`** 
 - [시퀀스 다이어그램](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/sequence_diagram.md)
@@ -33,6 +32,4 @@ Swagger를 이용한 API 명세
 ### **`STEP 06 PR 링크`**
 - [API 명세](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/api_specs.md)
 - [Swagger를 이용한 API 명세](https://github.com/JEONGBEOMKO/hhplus-concert/tree/main/hhplus-concert/src/docs/swagger)
-<img width="1482" alt="api_specs" src="https://github.com/user-attachments/assets/aabb86cd-d840-4dc0-bfdb-a26ba83cf6f0">
-
 - [패키지 구조 설계](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/architecture.md)
