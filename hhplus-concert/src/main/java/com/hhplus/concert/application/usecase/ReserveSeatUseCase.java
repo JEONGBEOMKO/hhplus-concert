@@ -1,7 +1,7 @@
 package com.hhplus.concert.application.usecase;
 
-import com.hhplus.concert.application.dto.request.ReservationRequest;
-import com.hhplus.concert.application.dto.response.ReservationResponse;
+import com.hhplus.concert.application.dto.input.ReservationInput;
+import com.hhplus.concert.application.dto.output.ReservationOutput;
 import com.hhplus.concert.domain.reservation.Reservation;
 import com.hhplus.concert.domain.seat.Seat;
 import com.hhplus.concert.infrastructure.repository.ReservationRepository;
@@ -22,7 +22,7 @@ public class ReserveSeatUseCase {
     }
 
     // 좌석 예약 처리 메서드
-    public ReservationResponse reserveSeat(ReservationRequest request) {
+    public ReservationOutput reserveSeat(ReservationInput request) {
         Seat seat = seatRepository.findById(request.getSeatId())
                 .orElseThrow(() -> new IllegalArgumentException("좌석을 찾을 수 없습니다."));
 
@@ -45,7 +45,7 @@ public class ReserveSeatUseCase {
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
-        return new ReservationResponse(
+        return new ReservationOutput(
                 savedReservation.getId(),
                 savedReservation.getUserId(),
                 savedReservation.getSeatId(),
@@ -58,10 +58,10 @@ public class ReserveSeatUseCase {
     }
 
     // 예약된 좌석의 상태 조회 메서드
-    public List<ReservationResponse> getReservationStatus(Long seatId) {
+    public List<ReservationOutput> getReservationStatus(Long seatId) {
         List<Reservation> reservations = reservationRepository.findAllBySeatId(seatId);
         return reservations.stream()
-                .map(reservation -> new ReservationResponse(
+                .map(reservation -> new ReservationOutput(
                         reservation.getId(),
                         reservation.getUserId(),
                         reservation.getSeatId(),

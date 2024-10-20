@@ -1,6 +1,5 @@
 package com.hhplus.concert.application.usecase;
 
-import com.hhplus.concert.application.dto.response.PaymentResponse;
 import com.hhplus.concert.domain.payment.Payment;
 import com.hhplus.concert.domain.queue.Queue;
 import com.hhplus.concert.domain.seat.Seat;

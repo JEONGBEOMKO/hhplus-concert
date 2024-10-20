@@ -1,9 +1,9 @@
 package com.hhplus.concert.unit;
 
-import com.hhplus.concert.application.dto.request.ConcertScheduleRequest;
-import com.hhplus.concert.application.dto.request.SeatRequest;
-import com.hhplus.concert.application.dto.response.ConcertScheduleResponse;
-import com.hhplus.concert.application.dto.response.SeatResponse;
+import com.hhplus.concert.application.dto.input.ConcertScheduleInput;
+import com.hhplus.concert.application.dto.input.SeatInput;
+import com.hhplus.concert.application.dto.output.ConcertScheduleOutput;
+import com.hhplus.concert.application.dto.output.SeatOutput;
 import com.hhplus.concert.application.usecase.GetAvailableDatesUseCase;
 import com.hhplus.concert.application.usecase.GetAvailableSeatsUseCase;
 import com.hhplus.concert.domain.concertschedule.ConcertSchedule;
@@ -61,8 +61,8 @@ public class ReservationAvailabilityTest {
         when(concertScheduleRepository.findAllByOpenAt(date)).thenReturn(Arrays.asList(schedule1, schedule2));
 
         // When
-        ConcertScheduleRequest request = new ConcertScheduleRequest(1L, date.toString());
-        List<ConcertScheduleResponse> availableDates = getAvailableDatesUseCase.getAvailableDates(request);
+        ConcertScheduleInput request = new ConcertScheduleInput(1L, date.toString());
+        List<ConcertScheduleOutput> availableDates = getAvailableDatesUseCase.getAvailableDates(request);
 
         // Then
         assertEquals(2, availableDates.size(), "예약 가능한 날짜의 개수가 예상과 다릅니다.");
@@ -74,7 +74,7 @@ public class ReservationAvailabilityTest {
     @DisplayName("예약 가능 날짜 조회 실패 테스트")
     public void testGetAvailableDates_InvalidDate() {
         // Given
-        ConcertScheduleRequest request = new ConcertScheduleRequest(1L, "invalid-date");
+        ConcertScheduleInput request = new ConcertScheduleInput(1L, "invalid-date");
 
         // When & Then
         assertThrows(java.time.format.DateTimeParseException.class, () -> {
@@ -92,8 +92,8 @@ public class ReservationAvailabilityTest {
         when(seatRepository.findByConcertScheduleId(concertScheduleId)).thenReturn(Arrays.asList(seat1, seat2));
 
         // When
-        SeatRequest request = new SeatRequest(concertScheduleId);
-        List<SeatResponse> availableSeats = getAvailableSeatsUseCase.getAvailableSeats(concertScheduleId);
+        SeatInput request = new SeatInput(concertScheduleId);
+        List<SeatOutput> availableSeats = getAvailableSeatsUseCase.getAvailableSeats(concertScheduleId);
 
         // Then
         assertEquals(2, availableSeats.size(), "예약 가능한 좌석의 개수는 2개여야 합니다.");

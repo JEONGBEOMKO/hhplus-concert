@@ -1,6 +1,6 @@
 package com.hhplus.concert.unit;
 
-import com.hhplus.concert.application.dto.response.ChargeResponse;
+import com.hhplus.concert.application.dto.output.ChargeOutput;
 import com.hhplus.concert.application.usecase.ChargeBalanceUseCase;
 import com.hhplus.concert.domain.user.User;
 import com.hhplus.concert.infrastructure.repository.UserRepository;
@@ -44,10 +44,10 @@ public class ChargeBalanceUseCaseTest {
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        ChargeResponse chargeResponse = chargeBalanceUseCase.chargeBalance(userId, amountToCharge);
+        ChargeOutput chargeOutput = chargeBalanceUseCase.chargeBalance(userId, amountToCharge);
 
         // Then
-        assertEquals(1500L, chargeResponse.getNewBalance(), "잔액 충전 후 새로운 잔액은 1500이어야 합니다.");
+        assertEquals(1500L, chargeOutput.getNewBalance(), "잔액 충전 후 새로운 잔액은 1500이어야 합니다.");
         verify(userRepository, times(1)).save(user); // 저장이 1회 호출되는지 검증
     }
 
