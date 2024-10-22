@@ -1,10 +1,11 @@
 package com.hhplus.concert.application.usecase;
 
-import com.hhplus.concert.application.dto.response.ChargeResponse;
+import com.hhplus.concert.application.dto.output.ChargeOutput;
 import com.hhplus.concert.domain.user.User;
 import com.hhplus.concert.infrastructure.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -15,13 +16,16 @@ public class ChargeBalanceUseCase {
         this.userRepository = userRepository;
     }
 
-    public ChargeResponse chargeBalance(UUID userId, Long amount){
+    // 잔액 충전 로직
+    public ChargeOutput chargeBalance(UUID userId, Long amount){
         User user =userRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다."));
 
-        user.setAmount(user.getAmount() + amount);
+        long newBalance = user.getAmount() + amount;
+        user.setAmount(newBalance);
         userRepository.save(user);
 
-        return new ChargeResponse(userId, user.getAmount());
+        return new ChargeOutput(user.getUserId(), amount, newBalance);
     }
+
 }

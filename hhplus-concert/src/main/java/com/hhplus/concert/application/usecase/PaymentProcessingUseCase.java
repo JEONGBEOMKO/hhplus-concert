@@ -30,17 +30,13 @@ public class PaymentProcessingUseCase {
         Seat seat = seatRepository.findById(seatId)
                 .orElseThrow(() -> new IllegalArgumentException("좌석을 찾을 수 없습니다."));
 
-        if (!"AVAILABLE".equals(seat.getSeatStatus())) {
-            throw new IllegalStateException("이미 예약된 좌석입니다.");
-        }
-
         long price = seat.getAmount(); // 실제 좌석 가격을 DB에서 가져옴
 
         // 결제 정보 생성
         Payment payment = new Payment(userId, seatId, price, "COMPLETED");
 
         // 결제 내역 저장
-        paymentRepository.save(payment);
+        Payment savedPayment = paymentRepository.save(payment);
 
         // 좌석의 소유권 부여
         seat.setSeatStatus("OCCUPIED"); // 소유권을 부여할 경우 상태 변경
@@ -50,7 +46,9 @@ public class PaymentProcessingUseCase {
         Queue queue = queueRepository.findByUserIdAndStatus(userId, "ACTIVE")
                 .orElseThrow(() -> new IllegalArgumentException("대기열 항목을 찾을 수 없습니다."));
         queue.setStatus("EXPIRED");
-        //queueRepository.save(queue);
+        queueRepository.save(queue);
+
+
     }
 
 }

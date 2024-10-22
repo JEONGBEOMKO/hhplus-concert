@@ -1,9 +1,11 @@
 package com.hhplus.concert.application.usecase;
 
+import com.hhplus.concert.application.dto.output.UserOutput;
 import com.hhplus.concert.domain.user.User;
 import com.hhplus.concert.infrastructure.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -15,10 +17,10 @@ public class GetUserBalanceUseCase {
     }
 
     // 사용자 잔액 조회 메서드
-    public Long getBalance(UUID userId) {
+    public UserOutput getUserById(UUID userId) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다."));
 
-        return user.getAmount();
+        return new UserOutput(user.getUserId(), user.getName(), user.getAmount());
     }
 }

@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface ConcertScheduleRepository extends JpaRepository<ConcertSchedule, Long> {
     // 특정 날짜에 열리는 콘서트 스케줄을 조회하는 메서드
-    List<ConcertSchedule> findAllByOpenAt(LocalDate openAt);
+    List<ConcertSchedule> findAllByConcertIdAndOpenAt(Long concertId, LocalDate openAt);
+    List<ConcertSchedule> findAllByConcertId(Long concertId);
 }

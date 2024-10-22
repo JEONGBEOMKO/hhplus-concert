@@ -1,7 +1,7 @@
 package com.hhplus.concert.unit;
 
-import com.hhplus.concert.application.dto.request.ReservationRequest;
-import com.hhplus.concert.application.dto.response.ReservationResponse;
+import com.hhplus.concert.application.dto.input.ReservationInput;
+import com.hhplus.concert.application.dto.output.ReservationOutput;
 import com.hhplus.concert.application.usecase.ReserveSeatUseCase;
 import com.hhplus.concert.domain.reservation.Reservation;
 import com.hhplus.concert.domain.seat.Seat;
@@ -13,11 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,7 +47,7 @@ public class ReserveSeatUseCaseTest {
     @Test
     public void testReserveSeat_Success() {
         // Given
-        ReservationRequest request = new ReservationRequest(userId, seatId, 1000L, 1);
+        ReservationInput request = new ReservationInput(userId, seatId, 1000L, 1);
         when(seatRepository.findById(seatId)).thenReturn(Optional.of(seat));
 
         LocalDateTime expectedExpirationTime = LocalDateTime.now().plusMinutes(5);
@@ -62,7 +59,7 @@ public class ReserveSeatUseCaseTest {
                 });
 
         // When
-        ReservationResponse response = reserveSeatUseCase.reserveSeat(request);
+        ReservationOutput response = reserveSeatUseCase.reserveSeat(request);
 
         // Then
         assertEquals("TEMPORARY", seat.getSeatStatus(), "좌석 상태가 임시 예약(TEMPORARY)이어야 합니다.");
@@ -77,7 +74,7 @@ public class ReserveSeatUseCaseTest {
     public void testReserveSeat_Fail_AlreadyReserved() {
         // Given
         seat.setSeatStatus("OCCUPIED"); // 좌석이 이미 예약된 상태
-        ReservationRequest request = new ReservationRequest(userId, seatId, 1000L, 1);
+        ReservationInput request = new ReservationInput(userId, seatId, 1000L, 1);
 
         when(seatRepository.findById(seatId)).thenReturn(Optional.of(seat));
 
@@ -92,7 +89,7 @@ public class ReserveSeatUseCaseTest {
     @Test
     public void testReserveSeat_Fail_SeatNotFound() {
         // Given
-        ReservationRequest request = new ReservationRequest(userId, seatId, 1000L, 1);
+        ReservationInput request = new ReservationInput(userId, seatId, 1000L, 1);
 
         when(seatRepository.findById(seatId)).thenReturn(Optional.empty()); // 좌석을 찾을 수 없음
 

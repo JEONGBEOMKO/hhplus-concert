@@ -12,6 +12,7 @@ public interface QueueRepository extends JpaRepository<Queue, Long> {
     Optional<Queue> findByUserIdAndStatus(UUID userId, String status);
     Optional<Queue> findByToken(String token);
     long countByStatus(String status);
+    long countByStatusAndQueuePositionLessThan(String status, int queuePosition);
 
     List<Queue> findAllByExpiredAtBeforeAndStatus(LocalDateTime expiredAt, String status);
     List<Queue> findAllByUserIdAndStatus(UUID userId, String status);

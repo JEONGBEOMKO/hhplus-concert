@@ -1,16 +1,20 @@
 package com.hhplus.concert.interfaces.api.seat;
 
-import com.hhplus.concert.application.dto.request.ReservationRequest;
-import com.hhplus.concert.application.dto.request.SeatRequest;
-import com.hhplus.concert.application.dto.response.ReservationResponse;
-import com.hhplus.concert.application.dto.response.SeatResponse;
+import com.hhplus.concert.application.dto.input.ReservationInput;
+import com.hhplus.concert.application.dto.input.SeatInput;
+import com.hhplus.concert.application.dto.output.ReservationOutput;
+import com.hhplus.concert.application.dto.output.SeatOutput;
 import com.hhplus.concert.application.usecase.GetAvailableSeatsUseCase;
 import com.hhplus.concert.application.usecase.ReserveSeatUseCase;
+import com.hhplus.concert.interfaces.api.reservation.dto.ReservationRequest;
+import com.hhplus.concert.interfaces.api.seat.dto.SeatRequest;
+import com.hhplus.concert.interfaces.api.seat.dto.SeatResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/seats")
@@ -26,27 +30,32 @@ public class SeatController {
     // 예약 가능한 좌석 조회 API
     @GetMapping("/available-seats")
     public ResponseEntity<List<SeatResponse>> getAvailableSeats(@RequestBody SeatRequest seatRequest) {
-        List<SeatResponse> availableSeats = getAvailableSeatsUseCase.getAvailableSeats(seatRequest.getConcertScheduleId());
-        return ResponseEntity.ok(availableSeats);
+        SeatInput seatInput = new SeatInput(seatRequest.getConcertScheduleId());
+        List<SeatOutput> availableSeats = getAvailableSeatsUseCase.getAvailableSeats(seatInput.getConcertScheduleId());
+        List<SeatResponse> seatResponses = availableSeats.stream()
+                .map(seatOutput -> new SeatResponse(
+                        seatOutput.getId(),
+                        seatOutput.getConcertScheduleId(),
+                        seatOutput.getAmount(),
+                        seatOutput.getPosition(),
+                        seatOutput.getSeatStatus()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(seatResponses);
     }
 
-    // 좌석 예약 요청 API (좌석 임시 배정)
-    @PostMapping("/reserve")
-    public ResponseEntity<?> reserveSeat(@RequestBody ReservationRequest request) {
-        // 좌석 번호가 1~50 사이인지 검증
-        if (request.getSeatId() < 1 || request.getSeatId() > 50) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("좌석 번호는 1에서 50 사이여야 합니다.");
-        }
-
-        ReservationResponse response = reserveSeatUseCase.reserveSeat(request);
-        return ResponseEntity.ok(response);
-    }
-
-    // 좌석 임시 예약 해제 및 만료 처리
-    @PostMapping("/expire-reservation/{reservationId}")
-    public ResponseEntity<Void> expireReservation(@PathVariable Long reservationId) {
-        reserveSeatUseCase.expireReservation(reservationId);
-        return ResponseEntity.noContent().build();
+    // 좌석 상태 확인 API
+    @GetMapping("/seat-status/{seatId}")
+    public ResponseEntity<SeatResponse> getSeatStatus(@PathVariable Long seatId) {
+        SeatOutput seatOutput = getAvailableSeatsUseCase.getSeatStatus(seatId);
+        SeatResponse seatResponse = new SeatResponse(
+                seatOutput.getId(),
+                seatOutput.getConcertScheduleId(),
+                seatOutput.getAmount(),
+                seatOutput.getPosition(),
+                seatOutput.getSeatStatus()
+        );
+        return ResponseEntity.ok(seatResponse);
     }
 }
