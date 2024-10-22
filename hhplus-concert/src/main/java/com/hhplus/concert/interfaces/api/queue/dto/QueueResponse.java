@@ -16,4 +16,7 @@ public class QueueResponse {
     private LocalDateTime enteredAt;
     private LocalDateTime expiredAt;
     private int queuePosition;
+    private long currentPosition;  // 현재 사용자의 대기열 순서
+    private long activeCount;      // 활성화된 대기열 수
+    private long remainingTime;    // 남은 시간
 }

@@ -6,6 +6,7 @@ import com.hhplus.concert.infrastructure.repository.SeatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,5 +31,19 @@ public class GetAvailableSeatsUseCase {
                         seat.getSeatStatus()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    // 좌석 상태 조회 메서드
+    public SeatOutput getSeatStatus(Long seatId) {
+        Seat seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new NoSuchElementException("좌석을 찾을 수 없습니다."));
+
+        return new SeatOutput(
+                seat.getId(),
+                seat.getConcertScheduleId(),
+                seat.getAmount(),
+                seat.getPosition(),
+                seat.getSeatStatus()
+        );
     }
 }

@@ -11,4 +11,5 @@ import java.util.UUID;
 public class UserInput {
     private UUID userId;
     private String name;
+    private Long amount;
 }

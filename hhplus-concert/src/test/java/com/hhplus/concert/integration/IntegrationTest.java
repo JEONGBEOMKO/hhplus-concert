@@ -6,6 +6,7 @@ import com.hhplus.concert.application.dto.input.ReservationInput;
 import com.hhplus.concert.application.dto.input.SeatInput;
 import com.hhplus.concert.application.dto.output.*;
 import com.hhplus.concert.application.usecase.ChargeBalanceUseCase;
+import com.hhplus.concert.application.usecase.GenerateQueueTokenUseCase;
 import com.hhplus.concert.application.usecase.PaymentProcessingUseCase;
 import com.hhplus.concert.domain.queue.Queue;
 import com.hhplus.concert.domain.seat.Seat;
@@ -50,6 +51,9 @@ public class IntegrationTest {
     @Autowired
     private PaymentProcessingUseCase paymentProcessingUseCase;
 
+    @Autowired
+    private GenerateQueueTokenUseCase generateQueueTokenUseCase;
+
 
 
     private UUID userId;
@@ -74,9 +78,10 @@ public class IntegrationTest {
     @Test
     @DisplayName("유저 대기열 토큰 발급 및 조회 테스트")
     public void testQueueTokenCreationAndPolling() {
-        // Token 생성 요청
+        // given Token 생성 요청
         QueueInput queueInput = new QueueInput(userId);
-        QueueOutput queueOutput = new QueueOutput(userId, "generated-token", "WAITING", LocalDateTime.now(), LocalDate.now().atStartOfDay().plusMinutes(5), 1);
+        // when
+        QueueOutput queueOutput = generateQueueTokenUseCase.generateToken(queueInput);
 
         // Assert queue 생성 검증
         assertNotNull(queueOutput.getToken(), "유저 대기열 토큰이 생성되어야 합니다.");

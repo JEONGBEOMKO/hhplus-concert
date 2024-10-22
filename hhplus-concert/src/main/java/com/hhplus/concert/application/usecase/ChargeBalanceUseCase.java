@@ -5,6 +5,7 @@ import com.hhplus.concert.domain.user.User;
 import com.hhplus.concert.infrastructure.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -15,25 +16,16 @@ public class ChargeBalanceUseCase {
         this.userRepository = userRepository;
     }
 
+    // 잔액 충전 로직
     public ChargeOutput chargeBalance(UUID userId, Long amount){
         User user =userRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다."));
 
         long newBalance = user.getAmount() + amount;
-
         user.setAmount(newBalance);
         userRepository.save(user);
 
-        return new ChargeOutput(userId, newBalance);
+        return new ChargeOutput(user.getUserId(), amount, newBalance);
     }
 
-    // 잔액 조회 메서드
-    public long getBalance(UUID userId) {
-        // 사용자 조회
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
-        // 현재 잔액 반환
-        return user.getAmount();
-    }
 }

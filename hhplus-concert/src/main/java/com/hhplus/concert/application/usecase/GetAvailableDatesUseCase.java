@@ -19,8 +19,17 @@ public class GetAvailableDatesUseCase {
         this.concertScheduleRepository = concertScheduleRepository;
     }
 
-    public List<ConcertScheduleOutput> getAvailableDates(ConcertScheduleInput request) {
-        List<ConcertSchedule> schedules = concertScheduleRepository.findAllByOpenAt(LocalDate.parse(request.getDate()));
+    public List<ConcertScheduleOutput> getAvailableDates(ConcertScheduleInput input) {
+        List<ConcertSchedule> schedules;
+        if (input.getOpenAt() != null) {
+            schedules = concertScheduleRepository.findAllByConcertIdAndOpenAt(
+                    input.getConcertId(), // Long 타입 그대로 전달
+                    input.getOpenAt()      // LocalDate 타입 그대로 전달
+            );
+        } else {
+            schedules = concertScheduleRepository.findAllByConcertId(input.getConcertId());
+        }
+
         return schedules.stream()
                 .map(schedule -> new ConcertScheduleOutput(
                         schedule.getId(),

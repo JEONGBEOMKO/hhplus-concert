@@ -16,4 +16,7 @@ public class QueueOutput {
     private LocalDateTime enteredAt;
     private LocalDateTime expiredAt;
     private int queuePosition;
+    private long currentPosition;
+    private long activeCount;
+    private long remainingTime;
 }

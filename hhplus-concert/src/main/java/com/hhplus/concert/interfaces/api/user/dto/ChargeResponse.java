@@ -10,5 +10,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ChargeResponse {
     private UUID userId;
+    private Long amount;
     private Long newBalance;
 }

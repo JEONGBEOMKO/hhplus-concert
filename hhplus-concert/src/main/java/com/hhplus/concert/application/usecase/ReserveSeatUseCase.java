@@ -9,6 +9,7 @@ import com.hhplus.concert.infrastructure.repository.SeatRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,25 +22,23 @@ public class ReserveSeatUseCase {
         this.seatRepository = seatRepository;
     }
 
-    // 좌석 예약 처리 메서드
-    public ReservationOutput reserveSeat(ReservationInput request) {
-        Seat seat = seatRepository.findById(request.getSeatId())
-                .orElseThrow(() -> new IllegalArgumentException("좌석을 찾을 수 없습니다."));
+    // 좌석 임시 예약 처리 메서드
+    public ReservationOutput reserveSeat(ReservationInput reservationInput) {
+        Seat seat = seatRepository.findById(reservationInput.getSeatId())
+                .orElseThrow(() -> new NoSuchElementException("좌석을 찾을 수 없습니다."));
 
         if (!seat.getSeatStatus().equals("AVAILABLE")) {
             throw new IllegalStateException("이미 예약된 좌석입니다.");
         }
 
-        // 좌석을 임시 예약 상태로 변경
         seat.setSeatStatus("TEMPORARY");
         seatRepository.save(seat);
 
-        // 예약 정보를 저장
         Reservation reservation = new Reservation(
-                request.getUserId(),
+                reservationInput.getUserId(),
                 seat.getId(),
-                request.getSeatAmount(),
-                seat.getPosition(),
+                reservationInput.getSeatAmount(),
+                reservationInput.getSeatPosition(),
                 "TEMPORARY"
         );
 
@@ -77,15 +76,13 @@ public class ReserveSeatUseCase {
     // 예약 만료 처리 메서드
     public void expireReservation(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("예약을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("예약을 찾을 수 없습니다."));
 
-        // 만료 처리
         reservation.setStatus("EXPIRED");
         reservationRepository.save(reservation);
 
-        // 좌석 상태 업데이트
         Seat seat = seatRepository.findById(reservation.getSeatId())
-                .orElseThrow(() -> new IllegalArgumentException("좌석을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("좌석을 찾을 수 없습니다."));
         seat.setSeatStatus("AVAILABLE");
         seatRepository.save(seat);
     }

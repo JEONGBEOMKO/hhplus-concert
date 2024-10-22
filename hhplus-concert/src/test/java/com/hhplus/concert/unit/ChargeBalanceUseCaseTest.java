@@ -1,7 +1,9 @@
 package com.hhplus.concert.unit;
 
 import com.hhplus.concert.application.dto.output.ChargeOutput;
+import com.hhplus.concert.application.dto.output.UserOutput;
 import com.hhplus.concert.application.usecase.ChargeBalanceUseCase;
+import com.hhplus.concert.application.usecase.GetUserBalanceUseCase;
 import com.hhplus.concert.domain.user.User;
 import com.hhplus.concert.infrastructure.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +28,9 @@ public class ChargeBalanceUseCaseTest {
 
     @InjectMocks
     private ChargeBalanceUseCase chargeBalanceUseCase;
+
+    @InjectMocks
+    private GetUserBalanceUseCase getUserBalanceUseCase;
 
     private UUID userId;
     private User user;
@@ -58,7 +64,8 @@ public class ChargeBalanceUseCaseTest {
         when(userRepository.findByUserId(userId)).thenReturn(Optional.of(user));
 
         // When
-        long balance = chargeBalanceUseCase.getBalance(userId);
+        UserOutput userOutput = getUserBalanceUseCase.getUserById(userId);
+        long balance = userOutput.getBalance();
 
         // Then
         assertEquals(1000L, balance, "조회된 잔액은 1000이어야 합니다.");
@@ -72,7 +79,7 @@ public class ChargeBalanceUseCaseTest {
         when(userRepository.findByUserId(nonExistentUserId)).thenReturn(Optional.empty());
 
         // When & Then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
             chargeBalanceUseCase.chargeBalance(nonExistentUserId, 500L);
         });
         assertEquals("사용자를 찾을 수 없습니다.", exception.getMessage(), "존재하지 않는 사용자에 대해 예외가 발생해야 합니다.");
@@ -86,8 +93,8 @@ public class ChargeBalanceUseCaseTest {
         when(userRepository.findByUserId(nonExistentUserId)).thenReturn(Optional.empty());
 
         // When & Then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            chargeBalanceUseCase.getBalance(nonExistentUserId);
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+            getUserBalanceUseCase.getUserById(nonExistentUserId);
         });
         assertEquals("사용자를 찾을 수 없습니다.", exception.getMessage(), "존재하지 않는 사용자에 대해 예외가 발생해야 합니다.");
     }
