@@ -27,7 +27,6 @@ public class QueueController {
         QueueInput queueInput = new QueueInput(queueRequest.getUserId());
         QueueOutput queueOutput = generateQueueTokenUseCase.generateToken(queueInput);
 
-        // QueueOutput을 QueueResponse로 변환하여 반환
         QueueResponse response = new QueueResponse(
                 queueOutput.getUserId(),
                 queueOutput.getToken(),
