@@ -11,6 +11,7 @@ import java.util.UUID;
 public interface QueueRepository extends JpaRepository<Queue, Long> {
     Optional<Queue> findByUserIdAndStatus(UUID userId, String status);
     Optional<Queue> findByToken(String token);
+    Optional<Queue> findByTokenAndUserId(String token, UUID userId);
     long countByStatus(String status);
     long countByStatusAndQueuePositionLessThan(String status, int queuePosition);
 
