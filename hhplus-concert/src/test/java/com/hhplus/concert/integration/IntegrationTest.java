@@ -5,9 +5,8 @@ import com.hhplus.concert.application.dto.input.QueueInput;
 import com.hhplus.concert.application.dto.input.ReservationInput;
 import com.hhplus.concert.application.dto.input.SeatInput;
 import com.hhplus.concert.application.dto.output.*;
-import com.hhplus.concert.application.usecase.ChargeBalanceUseCase;
-import com.hhplus.concert.application.usecase.GenerateQueueTokenUseCase;
-import com.hhplus.concert.application.usecase.PaymentProcessingUseCase;
+import com.hhplus.concert.application.usecase.*;
+import com.hhplus.concert.domain.concertschedule.ConcertSchedule;
 import com.hhplus.concert.domain.queue.Queue;
 import com.hhplus.concert.domain.seat.Seat;
 import com.hhplus.concert.domain.user.User;
@@ -17,16 +16,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@SqlGroup({
+        @Sql(scripts = "/test_data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+        @Sql(scripts = "/test_delete_data.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+})
 @Transactional
 public class IntegrationTest {
 
@@ -47,6 +53,12 @@ public class IntegrationTest {
 
     @Autowired
     private ChargeBalanceUseCase chargeBalanceUseCase;
+
+    @Autowired
+    private GetAvailableDatesUseCase getAvailableDatesUseCase;
+
+    @Autowired
+    private GetAvailableSeatsUseCase getAvailableSeatsUseCase;
 
     @Autowired
     private PaymentProcessingUseCase paymentProcessingUseCase;
@@ -95,19 +107,33 @@ public class IntegrationTest {
     @Test
     @DisplayName("예약 가능 날짜 및 좌석 조회 테스트")
     public void testAvailableDatesAndSeats() {
-        // 예약 가능한 날짜 조회
-        ConcertScheduleInput dateRequest = new ConcertScheduleInput(1L, "2024-10-25");
-        ConcertScheduleOutput dateResponse = new ConcertScheduleOutput(1L, 1L, LocalDate.parse("2024-10-25"), null, null, 50, 50, "AVAILABLE");
 
+        // Given: ConcertSchedule 데이터 설정
+        LocalDate openAt = LocalDate.parse("2024-10-25");
+        ConcertSchedule schedule = new ConcertSchedule(1L, openAt, LocalDateTime.now(), LocalDateTime.now().plusHours(2), 50, 50, "AVAILABLE");
+        concertScheduleRepository.save(schedule);
+
+        // Given: Seat 데이터 설정
+        Seat seat = new Seat(1L, 1000L, 1, "AVAILABLE");
+        seatRepository.save(seat);
+
+        // When: 예약 가능한 날짜 조회
+        ConcertScheduleInput dateRequest = new ConcertScheduleInput(1L, openAt);
+        List<ConcertScheduleOutput> dateResponse = getAvailableDatesUseCase.getAvailableDates(dateRequest);
+
+        // Then: 예약 가능한 날짜 검증
         assertNotNull(dateResponse, "예약 가능한 날짜 응답은 null이 아니어야 합니다.");
-        assertEquals(LocalDate.parse("2024-10-25"), dateResponse.getOpenAt(), "예약 가능한 날짜는 요청된 날짜와 일치해야 합니다.");
+        assertEquals(1, dateResponse.size(), "예약 가능한 날짜는 한 개여야 합니다.");
+        assertEquals(openAt, dateResponse.get(0).getOpenAt(), "예약 가능한 날짜는 요청된 날짜와 일치해야 합니다.");
 
-        // 예약 가능한 좌석 조회
+        //  When: 예약 가능한 좌석 조회
         SeatInput seatInput = new SeatInput(1L);
-        SeatOutput seatOutput = new SeatOutput(1L, 1L, 1000L, 1, "AVAILABLE");
+        List<SeatOutput> seatResponse = getAvailableSeatsUseCase.getAvailableSeats(seatInput.getConcertScheduleId());
 
-        assertNotNull(seatOutput, "예약 가능한 좌석 응답은 null이 아니어야 합니다.");
-        assertEquals("AVAILABLE", seatOutput.getSeatStatus(), "예약 가능한 좌석 상태는 'AVAILABLE'이어야 합니다.");
+        // Then: 예약 가능한 좌석 검증
+        assertNotNull(seatResponse, "예약 가능한 좌석 응답은 null이 아니어야 합니다.");
+        assertEquals(1, seatResponse.size(), "예약 가능한 좌석은 한 개여야 합니다.");
+        assertEquals("AVAILABLE", seatResponse.get(0).getSeatStatus(), "예약 가능한 좌석 상태는 'AVAILABLE'이어야 합니다.");
     }
 
     @Test

@@ -3,12 +3,15 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: create
-    show-sql: true
-    generate-ddl: true
-    defer-datasource-initialization: true
+    show-sql: true                        # SQL 쿼리 로깅
+    generate-ddl: true                    # DDL 자동 생성
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true # 데이터베이스 초기화 지연
 
   datasource:
-    url: jdbc:mysql://localhost:3306/concert?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC  # MySQL URL? ??
+    url: jdbc:mysql://localhost:3306/concert?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: testuser
     password: 1234!
-    driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL JDBC ???? ??
+    driver-class-name: com.mysql.cj.jdbc.Driver
