@@ -6,5 +6,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 public class ConcertController {
-    //private
+    // 추후에 추가
 }

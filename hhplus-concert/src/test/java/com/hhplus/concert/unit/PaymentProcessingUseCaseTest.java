@@ -1,5 +1,6 @@
 package com.hhplus.concert.unit;
 
+import com.hhplus.concert.application.dto.input.PaymentInput;
 import com.hhplus.concert.application.usecase.PaymentProcessingUseCase;
 import com.hhplus.concert.application.usecase.QueueProcessingScheduler;
 import com.hhplus.concert.domain.payment.Payment;
@@ -11,16 +12,14 @@ import com.hhplus.concert.infrastructure.repository.SeatRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -56,19 +55,23 @@ public class PaymentProcessingUseCaseTest {
         Long seatId = 1L;
         Long concertScheduleId = 1L;
         Integer position = 1;
+        Long amount = 1000L;
         Seat seat = new Seat(concertScheduleId, 1000L, position, "AVAILABLE");
+        Payment payment = new Payment(userId, seatId, amount, "COMPLETED");
 
-        // seatRepository가 seatId로 조회할 때 Optional.of(seat)를 반환하도록 설정
         when(seatRepository.findById(seatId)).thenReturn(Optional.of(seat));
-
+        when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
         // 대기열 Queue 설정
         Queue activeQueue = new Queue(userId, "token", "ACTIVE", LocalDateTime.now(), LocalDateTime.now().plusMinutes(5), 1);
         when(queueRepository.findByUserIdAndStatus(userId, "ACTIVE")).thenReturn(Optional.of(activeQueue));
 
+        PaymentInput paymentInput = new PaymentInput(userId, seatId, amount);
         // When
-        paymentProcessingUseCase.processPayment(userId, seatId);
+        paymentProcessingUseCase.processPayment(paymentInput);
 
         // Then
+        ArgumentCaptor<Payment> paymentCaptor = ArgumentCaptor.forClass(Payment.class);
+        verify(paymentRepository).save(paymentCaptor.capture());
         verify(paymentRepository).save(any(Payment.class)); // 결제 내역 저장 확인
         assertEquals("OCCUPIED", seat.getSeatStatus()); // 좌석 상태 확인
         assertEquals("EXPIRED", activeQueue.getStatus()); // 대기열 상태 확인
@@ -83,12 +86,14 @@ public class PaymentProcessingUseCaseTest {
         // lenient()를 사용하여 불필요한 stubbing 예외 방지
         lenient().when(seatRepository.findById(seatId)).thenReturn(Optional.empty());
 
+        PaymentInput paymentInput = new PaymentInput(userId, seatId, 1000L);
+
         // When & Then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            paymentProcessingUseCase.processPayment(userId, seatId);
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+            paymentProcessingUseCase.processPayment(paymentInput);
         });
 
-        assertEquals("좌석을 찾을 수 없습니다.", exception.getMessage()); // 예외 메시지 검증
+        assertEquals("좌석을 찾을 수 없습니다.", exception.getMessage());
     }
 
     @Test
@@ -96,19 +101,21 @@ public class PaymentProcessingUseCaseTest {
         // Given
         UUID userId = UUID.randomUUID();
         Long seatId = 1L;
-        Integer position = 1; // Integer 타입의 position 필드 사용
+        Integer position = 1;
         Seat seat = new Seat(seatId, 1000L, position, "AVAILABLE");
 
         // Seat는 존재하지만 Queue는 찾지 못하도록 설정
         when(seatRepository.findById(seatId)).thenReturn(Optional.of(seat));
         when(queueRepository.findByUserIdAndStatus(userId, "ACTIVE")).thenReturn(Optional.empty());
 
+        PaymentInput paymentInput = new PaymentInput(userId, seatId, 1000L);
+
         // When & Then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            paymentProcessingUseCase.processPayment(userId, seatId);
+        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+            paymentProcessingUseCase.processPayment(paymentInput);
         });
 
-        assertEquals("대기열 항목을 찾을 수 없습니다.", exception.getMessage()); // 예외 메시지 검증
+        assertEquals("대기열 항목을 찾을 수 없습니다.", exception.getMessage());
     }
 
     @Test

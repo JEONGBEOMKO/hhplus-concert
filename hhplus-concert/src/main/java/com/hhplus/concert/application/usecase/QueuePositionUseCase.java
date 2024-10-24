@@ -6,6 +6,7 @@ import com.hhplus.concert.infrastructure.repository.QueueRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 public class QueuePositionUseCase {
@@ -18,8 +19,8 @@ public class QueuePositionUseCase {
     }
 
     // 대기열에서 현재 몇 번째 순서인지 조회하는 메서드
-    public QueueOutput getQueuePosition(String token) {
-        Queue queue = queueRepository.findByToken(token)
+    public QueueOutput getQueuePosition(String token, UUID userId) {
+        Queue queue = queueRepository.findByTokenAndUserId(token, userId)
                 .orElseThrow(() -> new NoSuchElementException("유효하지 않은 토큰입니다."));
 
         // 현재 활성화된 대기열 수 확인
@@ -37,7 +38,7 @@ public class QueuePositionUseCase {
                 queue.getEnteredAt(),
                 queue.getExpiredAt(),
                 queue.getQueuePosition(),
-                currentPosition,  // 현재 사용자의 대기열 순서
+                currentPosition,
                 activeCount,
                 remainingTime
         );
