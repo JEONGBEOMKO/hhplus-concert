@@ -10,6 +10,8 @@ import com.hhplus.concert.interfaces.api.queue.dto.QueueResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/queues")
 public class QueueController {
@@ -44,10 +46,11 @@ public class QueueController {
 
     // 대기열 위치 조회 API
     @GetMapping("/position/{token}")
-    public ResponseEntity<QueueResponse> getQueuePosition(@PathVariable String token) {
-        QueueOutput queueOutput = queuePositionUseCase.getQueuePosition(token);
+    public ResponseEntity<QueueResponse> getQueuePosition(@PathVariable String token , @RequestHeader("User-Id") String userIdHeader) {
+        UUID userId = UUID.fromString(userIdHeader);
 
-        // QueueOutput을 QueueResponse로 변환하여 반환
+        QueueOutput queueOutput = queuePositionUseCase.getQueuePosition(token, userId);
+
         QueueResponse response = new QueueResponse(
                 queueOutput.getUserId(),
                 queueOutput.getToken(),

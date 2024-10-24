@@ -7,6 +7,7 @@ import com.hhplus.concert.domain.seat.Seat;
 import com.hhplus.concert.infrastructure.repository.ReservationRepository;
 import com.hhplus.concert.infrastructure.repository.SeatRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;

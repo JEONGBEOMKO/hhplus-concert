@@ -58,10 +58,10 @@ public class ReservationAvailabilityTest {
         ConcertSchedule schedule1 = new ConcertSchedule(1L, date, LocalDateTime.now(), LocalDateTime.now().plusHours(2), 50, 50, "AVAILABLE");
         ConcertSchedule schedule2 = new ConcertSchedule(1L, date, LocalDateTime.now(), LocalDateTime.now().plusHours(2), 50, 25, "AVAILABLE");
 
-        when(concertScheduleRepository.findAllByOpenAt(date)).thenReturn(Arrays.asList(schedule1, schedule2));
+        when(concertScheduleRepository.findAllByConcertIdAndOpenAt(1L, date)).thenReturn(Arrays.asList(schedule1, schedule2));
 
         // When
-        ConcertScheduleInput request = new ConcertScheduleInput(1L, date.toString());
+        ConcertScheduleInput request = new ConcertScheduleInput(1L, date);
         List<ConcertScheduleOutput> availableDates = getAvailableDatesUseCase.getAvailableDates(request);
 
         // Then
@@ -74,7 +74,7 @@ public class ReservationAvailabilityTest {
     @DisplayName("예약 가능 날짜 조회 실패 테스트")
     public void testGetAvailableDates_InvalidDate() {
         // Given
-        ConcertScheduleInput request = new ConcertScheduleInput(1L, "invalid-date");
+        ConcertScheduleInput request = new ConcertScheduleInput(1L, date);
 
         // When & Then
         assertThrows(java.time.format.DateTimeParseException.class, () -> {
