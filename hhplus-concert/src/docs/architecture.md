@@ -4,6 +4,12 @@
 hhplusconcert/
 ├── src/main/java/com/hhplu/
 │   └── hhplusconcert/
+│       ├── config/
+│       │   └── WebConfig.java
+│       ├── interceptor/
+│       │   └── QueueTokenInterceptor.java
+│       ├── exception/
+│       │   └── GlobalExceptionHandler.java
 │       ├── application/                  
 │       │   ├── usecase/                   // 유스케이스 관리 패키지
 │       │   │   ├── GenerateQueueTokenUseCase.java   
