@@ -1,6 +1,6 @@
 package com.hhplus.concert.config;
 
-import com.hhplus.concert.interceptor.QueueTokenInterceptor;
+import com.hhplus.concert.config.interceptor.QueueTokenInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 

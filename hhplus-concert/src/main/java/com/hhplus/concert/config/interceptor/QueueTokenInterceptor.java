@@ -1,4 +1,4 @@
-package com.hhplus.concert.interceptor;
+package com.hhplus.concert.config.interceptor;
 
 import com.hhplus.concert.domain.queue.Queue;
 import com.hhplus.concert.infrastructure.repository.QueueRepository;
