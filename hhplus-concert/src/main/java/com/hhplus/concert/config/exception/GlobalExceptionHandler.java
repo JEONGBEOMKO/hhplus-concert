@@ -1,4 +1,4 @@
-package com.hhplus.concert.exception;
+package com.hhplus.concert.config.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
