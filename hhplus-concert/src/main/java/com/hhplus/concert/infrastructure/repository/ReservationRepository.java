@@ -19,4 +19,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByUserIdAndStatus(UUID userId, String status);
 
     List<Reservation> findAllBySeatId(Long seatId);
+
+    long countBySeatIdAndStatus(Long seatId, String status);
 }
