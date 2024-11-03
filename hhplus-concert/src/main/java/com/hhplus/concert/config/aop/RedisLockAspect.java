@@ -17,20 +17,17 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisLockAspect {
     private final RedissonClient redissonClient;
-    private  final ExpressionParser parser = new SpelExpressionParser();
     private  final AopForTransaction aopForTransaction;
 
     public RedisLockAspect(RedissonClient redissonClient, AopForTransaction aopForTransaction) {
         this.redissonClient = redissonClient;
-
         this.aopForTransaction = aopForTransaction;
     }
 
     @Around("@annotation(redisLock)")
     public Object aroundRedisLock(ProceedingJoinPoint joinPoint, RedisLock redisLock) throws Throwable{
-        StandardEvaluationContext context = new StandardEvaluationContext();
-        String keyExpression = redisLock.key();
-        String key = parser.parseExpression(keyExpression).getValue(context, String.class);
+        Object keyParam = joinPoint.getArgs()[redisLock.keyParameterIndex()];
+        String key = redisLock.keyPrefix() + keyParam.toString();
 
         RLock lock = redissonClient.getLock(key);
 

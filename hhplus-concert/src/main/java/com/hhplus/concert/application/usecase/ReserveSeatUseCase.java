@@ -28,7 +28,7 @@ public class ReserveSeatUseCase {
     }
 
     // 좌석 임시 예약 처리 메서드
-    @RedisLock(key = "'seat-lock:' + #reservationInput.seatId", waitTime = 5, leaseTime = 10)
+    @RedisLock(keyParameterIndex = 0, waitTime = 5, leaseTime = 10)
     public ReservationOutput reserveSeat(ReservationInput reservationInput) {
         Seat seat = seatRepository.findById(reservationInput.getSeatId())
                 .orElseThrow(() -> new NoSuchElementException("좌석을 찾을 수 없습니다."));
