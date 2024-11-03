@@ -21,22 +21,15 @@ import java.util.stream.Collectors;
 public class ReserveSeatUseCase {
     private final ReservationRepository reservationRepository;
     private final SeatRepository seatRepository;
-    private final RedissonClient redissonClient;
 
-    public ReserveSeatUseCase(ReservationRepository reservationRepository, SeatRepository seatRepository, RedissonClient redissonClient) {
+    public ReserveSeatUseCase(ReservationRepository reservationRepository, SeatRepository seatRepository) {
         this.reservationRepository = reservationRepository;
         this.seatRepository = seatRepository;
-        this.redissonClient = redissonClient;
     }
 
     // 좌석 임시 예약 처리 메서드
     @RedisLock(key = "'seat-lock:' + #reservationInput.seatId", waitTime = 5, leaseTime = 10)
     public ReservationOutput reserveSeat(ReservationInput reservationInput) {
-        return performReservation(reservationInput);
-    }
-
-    @Transactional
-    public ReservationOutput performReservation(ReservationInput reservationInput) {
         Seat seat = seatRepository.findById(reservationInput.getSeatId())
                 .orElseThrow(() -> new NoSuchElementException("좌석을 찾을 수 없습니다."));
 
