@@ -15,3 +15,13 @@ spring:
     username: testuser
     password: 1234!
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    host: redis-container
+    port: 6379
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 5
+        min-idle: 1

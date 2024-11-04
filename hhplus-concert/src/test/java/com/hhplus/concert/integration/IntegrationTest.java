@@ -74,7 +74,11 @@ public class IntegrationTest {
     @BeforeEach
     public void setUp(){
         userId = UUID.randomUUID();
-        User user = new User(userId, "Test User", 10000L); // 초기 잔액 10000L 설정
+        User user = User.builder()
+                .userId(userId)
+                .name("Test User")
+                .amount(10000L)
+                .build();// 초기 잔액 10000L 설정
         userRepository.save(user);
 
         // 테스트용 좌석 생성 및 저장

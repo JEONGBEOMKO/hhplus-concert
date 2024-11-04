@@ -38,7 +38,11 @@ public class ChargeBalanceUseCaseTest {
     @BeforeEach
     public void setUp() {
         userId = UUID.randomUUID();
-        user = new User(userId, "Test User", 1000L);
+        user = User.builder()
+                .userId(userId)
+                .name("Test User")
+                .amount(1000L)
+                .build();
     }
 
     @Test

@@ -10,22 +10,22 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
-public class ChargeBalanceUseCase {
+public class DeductBalanceUseCase {
     private final UserRepository userRepository;
 
-    public ChargeBalanceUseCase(UserRepository userRepository) {
+    public DeductBalanceUseCase(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    // 잔액 충전 로직
+    // 포인트 차감 로직
     @Transactional
-    public ChargeOutput chargeBalance(UUID userId, Long amount){
-        User user =userRepository.findByUserId(userId)
+    public ChargeOutput deductBalance(UUID userId, Long amount) {
+        User user = userRepository.findByUserIdWithPessimisticLock(userId)
                 .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다."));
 
-        user.addAmount(amount);
+        user.deductAmount(amount);
         userRepository.save(user);
 
-        return new ChargeOutput(user.getUserId(), amount, user.getAmount());
+        return new ChargeOutput(user.getUserId(), -amount, user.getAmount());
     }
 }

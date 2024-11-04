@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "queue")
+@Table(name = "queues")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -18,7 +18,7 @@ public class Queue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 36)
     private UUID userId;
 
     @Column(nullable = false, unique = true)
