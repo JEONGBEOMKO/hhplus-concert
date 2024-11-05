@@ -12,6 +12,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 @Aspect
@@ -29,7 +30,7 @@ public class RedisLockAspect {
 
     @Around("@annotation(redisLock)")
     public Object aroundRedisLock(ProceedingJoinPoint joinPoint, RedisLock redisLock) throws Throwable{
-        String key = parseKey(redisLock.keyExpression(), joinPoint);
+        String key = generateKey(joinPoint, redisLock);
 
         RLock lock = redissonClient.getLock(key);
 
@@ -49,17 +50,15 @@ public class RedisLockAspect {
 
     }
 
-    private String parseKey(String keyExpression, ProceedingJoinPoint joinPoint) {
-        StandardEvaluationContext context = new StandardEvaluationContext();
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Object[] args = joinPoint.getArgs();
-
-        // 메서드 파라미터 이름과 값을 SpEL 컨텍스트에 추가
-        for (int i = 0; i < signature.getParameterNames().length; i++) {
-            context.setVariable(signature.getParameterNames()[i], args[i]);
+    // 고유 키 생성 로직을 keyGenerator를 통해 사용
+    private String generateKey(ProceedingJoinPoint joinPoint, RedisLock redisLock) throws Exception {
+        if (!redisLock.keyGenerator().isEmpty()) {
+            Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+            Method keyGenMethod = joinPoint.getTarget().getClass().getDeclaredMethod(redisLock.keyGenerator(), method.getParameterTypes());
+            keyGenMethod.setAccessible(true);
+            return (String) keyGenMethod.invoke(joinPoint.getTarget(), joinPoint.getArgs());
+        } else {
+            throw new IllegalArgumentException("keyGenerator는 지정되어야 합니다.");
         }
-
-        // keyExpression을 SpEL로 평가하여 키 생성
-        return parser.parseExpression(keyExpression).getValue(context, String.class);
     }
 }
