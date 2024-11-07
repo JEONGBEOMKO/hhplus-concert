@@ -10,6 +10,12 @@ spring:
         format_sql: true
     defer-datasource-initialization: true # 데이터베이스 초기화 지연
 
+  cache:
+    type: redis
+    redis:
+      host: localhost
+      port: 6379
+
   datasource:
     url: jdbc:mysql://localhost:3306/concert?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: testuser

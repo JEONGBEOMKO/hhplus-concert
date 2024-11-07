@@ -6,6 +6,7 @@ import com.hhplus.concert.application.usecase.GetAvailableDatesUseCase;
 import com.hhplus.concert.interfaces.api.concertschedule.dto.ConcertScheduleRequest;
 import com.hhplus.concert.interfaces.api.concertschedule.dto.ConcertScheduleResponse;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class ConcertScheduleController {
     }
 
     // 예약 가능 날짜 조회 API
+    @Cacheable(value = "availableDates", key = "#request.concertId + '_' + #request.openAt")
     @GetMapping("/available-dates")
     public ResponseEntity<List<ConcertScheduleResponse>> getAvailableDates(@RequestBody ConcertScheduleRequest request) {
         ConcertScheduleInput input = new ConcertScheduleInput(

@@ -1,6 +1,6 @@
 package com.hhplus.concert.config.aop;
 
-import com.hhplus.concert.config.aop.annotation.RedisLock;
+import com.hhplus.concert.config.aop.annotation.DistributedLock;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -9,7 +9,6 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -18,24 +17,24 @@ import java.util.concurrent.TimeUnit;
 @Aspect
 //@Order(1) AopForTransaction 클래스 사용 안 하고 메서드에 @Transactional 처리
 @Component
-public class RedisLockAspect {
+public class DistributedLockAspect {
     private final RedissonClient redissonClient;
     private  final AopForTransaction aopForTransaction;
     private final ExpressionParser parser = new SpelExpressionParser();
 
-    public RedisLockAspect(RedissonClient redissonClient, AopForTransaction aopForTransaction) {
+    public DistributedLockAspect(RedissonClient redissonClient, AopForTransaction aopForTransaction) {
         this.redissonClient = redissonClient;
         this.aopForTransaction = aopForTransaction;
     }
 
-    @Around("@annotation(redisLock)")
-    public Object aroundRedisLock(ProceedingJoinPoint joinPoint, RedisLock redisLock) throws Throwable{
-        String key = generateKey(joinPoint, redisLock);
+    @Around("@annotation(distributedLock)")
+    public Object aroundRedisLock(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable{
+        String key = generateKey(joinPoint, distributedLock);
 
         RLock lock = redissonClient.getLock(key);
 
         try{
-            if (lock.tryLock(redisLock.waitTime(), redisLock.leaseTime(), TimeUnit.SECONDS)) {
+            if (lock.tryLock(distributedLock.waitTime(), distributedLock.leaseTime(), TimeUnit.SECONDS)) {
                 return aopForTransaction.proceed(joinPoint);
             } else {
                 throw new IllegalStateException("락을 획득할 수 없습니다. 다시 시도해주세요.");
@@ -51,7 +50,7 @@ public class RedisLockAspect {
     }
 
     // 고유 키 생성 로직을 keyGenerator를 통해 사용
-    private String generateKey(ProceedingJoinPoint joinPoint, RedisLock redisLock) throws Exception {
+    private String generateKey(ProceedingJoinPoint joinPoint, DistributedLock redisLock) throws Exception {
         if (!redisLock.keyGenerator().isEmpty()) {
             Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
             Method keyGenMethod = joinPoint.getTarget().getClass().getDeclaredMethod(redisLock.keyGenerator(), method.getParameterTypes());
