@@ -46,22 +46,8 @@ public class QueueController {
 
     // 대기열 위치 조회 API
     @GetMapping("/position/{token}")
-    public ResponseEntity<QueueResponse> getQueuePosition(@PathVariable String token , @RequestHeader("User-Id") String userIdHeader) {
-        UUID userId = UUID.fromString(userIdHeader);
-
-        QueueOutput queueOutput = queuePositionUseCase.getQueuePosition(token, userId);
-
-        QueueResponse response = new QueueResponse(
-                queueOutput.getUserId(),
-                queueOutput.getToken(),
-                queueOutput.getStatus(),
-                queueOutput.getEnteredAt(),
-                queueOutput.getExpiredAt(),
-                queueOutput.getQueuePosition(),
-                queueOutput.getCurrentPosition(),
-                queueOutput.getActiveCount(),
-                queueOutput.getRemainingTime()
-        );
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Long> getQueuePosition(@PathVariable String token) {
+        long position = queuePositionUseCase.getQueuePosition(token);
+        return ResponseEntity.ok(position);
     }
 }
