@@ -35,12 +35,12 @@ public class QueueProcessingScheduler {
 
     // 대기열 순차 활성화
     @Scheduled(fixedRate = 60000)
-    public void activateNextInQueue(UUID userId) {
+    public void activateNextInQueue() {
         long activeCount = queueRepository.countByStatus("ACTIVE");
 
         // 활성화 가능한 항목이 더 있는지 확인
         if (activeCount < MAX_ACTIVE_COUNT) {
-            List<Queue> waitingQueues = queueRepository.findAllByUserIdAndStatus(userId,"WAITING");
+            List<Queue> waitingQueues = queueRepository.findAllByStatus("WAITING");
 
             if (!waitingQueues.isEmpty()) {
                 // 활성화할 대기열 항목 수를 최대 활성화 가능 수로 제한

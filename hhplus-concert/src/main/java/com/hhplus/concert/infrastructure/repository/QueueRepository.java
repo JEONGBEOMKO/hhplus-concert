@@ -17,4 +17,5 @@ public interface QueueRepository extends JpaRepository<Queue, Long> {
 
     List<Queue> findAllByExpiredAtBeforeAndStatus(LocalDateTime expiredAt, String status);
     List<Queue> findAllByUserIdAndStatus(UUID userId, String status);
+    List<Queue> findAllByStatus(String status);
 }
