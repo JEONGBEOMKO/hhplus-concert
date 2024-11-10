@@ -21,18 +21,6 @@ public class QueueProcessingScheduler {
         this.queueRepository = queueRepository;
     }
 
-    // 1분마다 대기열에서 만료된 항목 처리
-    @Scheduled(fixedRate = 60000)  // 1분마다 실행
-    public void processExpiredQueues() {
-        LocalDateTime now = LocalDateTime.now();
-        List<Queue> expiredQueues = queueRepository.findAllByExpiredAtBeforeAndStatus(now, "WAITING");
-
-        for (Queue queue : expiredQueues) {
-            queue.setStatus("EXPIRED");
-            queueRepository.save(queue);
-        }
-    }
-
     // 대기열 순차 활성화
     @Scheduled(fixedRate = 60000)
     public void activateNextInQueue() {
@@ -52,6 +40,24 @@ public class QueueProcessingScheduler {
                     queueRepository.save(queue);
                 }
             }
+        }
+    }
+
+    // 1분마다 대기열에서 만료된 항목 처리
+    @Scheduled(fixedRate = 60000)  // 1분마다 실행
+    public void processExpiredQueues() {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Queue> expiredWaitingQueues = queueRepository.findAllByExpiredAtBeforeAndStatus(now, "WAITING");
+        for (Queue queue : expiredWaitingQueues) {
+            queue.setStatus("EXPIRED");
+            queueRepository.save(queue);
+        }
+
+        List<Queue> expiredActiveQueues = queueRepository.findAllByExpiredAtBeforeAndStatus(now, "ACTIVE");
+        for (Queue queue : expiredActiveQueues) {
+            queue.setStatus("EXPIRED");
+            queueRepository.save(queue);
         }
     }
 }
