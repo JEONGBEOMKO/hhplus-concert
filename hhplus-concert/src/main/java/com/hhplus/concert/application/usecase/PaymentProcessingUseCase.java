@@ -4,8 +4,10 @@ import com.hhplus.concert.application.dto.input.PaymentInput;
 import com.hhplus.concert.application.dto.output.ChargeOutput;
 import com.hhplus.concert.application.dto.output.PaymentOutput;
 import com.hhplus.concert.domain.payment.Payment;
+import com.hhplus.concert.domain.payment.event.PaymentCompletedEvent;
 import com.hhplus.concert.domain.queue.Queue;
 import com.hhplus.concert.domain.seat.Seat;
+import com.hhplus.concert.infrastructure.event.EventPublisher;
 import com.hhplus.concert.infrastructure.repository.PaymentRepository;
 import com.hhplus.concert.infrastructure.repository.QueueRepository;
 import com.hhplus.concert.infrastructure.repository.SeatRepository;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 public class PaymentProcessingUseCase {
@@ -21,13 +22,15 @@ public class PaymentProcessingUseCase {
     private final SeatRepository seatRepository;
     private final QueueRepository queueRepository;
     private final DeductBalanceUseCase deductBalanceUseCase;
+    private final EventPublisher<PaymentCompletedEvent> paymentEventPublisher;
 
 
-    public PaymentProcessingUseCase(PaymentRepository paymentRepository, SeatRepository seatRepository, QueueRepository queueRepository, DeductBalanceUseCase deductBalanceUseCase) {
+    public PaymentProcessingUseCase(PaymentRepository paymentRepository, SeatRepository seatRepository, QueueRepository queueRepository, DeductBalanceUseCase deductBalanceUseCase, EventPublisher<PaymentCompletedEvent> paymentEventPublisher) {
         this.paymentRepository = paymentRepository;
         this.seatRepository = seatRepository;
         this.queueRepository = queueRepository;
         this.deductBalanceUseCase = deductBalanceUseCase;
+        this.paymentEventPublisher = paymentEventPublisher;
     }
 
     @Transactional
@@ -57,6 +60,14 @@ public class PaymentProcessingUseCase {
                 .orElseThrow(() -> new NoSuchElementException("대기열 항목을 찾을 수 없습니다."));
         queue.setStatus("EXPIRED");
         queueRepository.save(queue);
+
+        // 6. 결제 완료 이벤트 발행
+        PaymentCompletedEvent event = PaymentCompletedEvent.builder()
+                .paymentId(savedPayment.getId())
+                .userId(paymentInput.getUserId())
+                .build();
+
+        paymentEventPublisher.publish(event);
 
         return new PaymentOutput(
                 savedPayment.getId(),
