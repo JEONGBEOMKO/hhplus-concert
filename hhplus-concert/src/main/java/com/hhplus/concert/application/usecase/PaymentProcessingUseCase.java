@@ -44,14 +44,13 @@ public class PaymentProcessingUseCase {
         // 2. 유저 조회 및 잔액 차감
         ChargeOutput chargeOutput = deductBalanceUseCase.deductBalance(paymentInput.getUserId(), seat.getAmount());
 
-
-        // 3. 결제 정보 생성 및 저장
-        Payment payment = new Payment(paymentInput.getUserId(), paymentInput.getSeatId(), seat.getAmount(), "COMPLETED");
-        Payment savedPayment = paymentRepository.save(payment);
-
-        // 4. 좌석 상태 변경
+        // 3. 좌석 상태 변경
         seat.setSeatStatus("OCCUPIED");
         seatRepository.save(seat);
+
+        // 4. 결제 정보 생성 및 저장
+        Payment payment = new Payment(paymentInput.getUserId(), paymentInput.getSeatId(), seat.getAmount(), "COMPLETED");
+        Payment savedPayment = paymentRepository.save(payment);
 
         // 5. 대기열 토큰 만료
         Queue queue = queueRepository.findByUserIdAndStatus(payment.getUserId(), "ACTIVE")
