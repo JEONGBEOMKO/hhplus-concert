@@ -1,6 +1,7 @@
 package com.hhplus.concert.application.usecase;
 
 import com.hhplus.concert.application.dto.input.PaymentInput;
+import com.hhplus.concert.application.dto.output.ChargeOutput;
 import com.hhplus.concert.application.dto.output.PaymentOutput;
 import com.hhplus.concert.domain.payment.Payment;
 import com.hhplus.concert.domain.queue.Queue;
@@ -19,17 +20,20 @@ public class PaymentProcessingUseCase {
     private final PaymentRepository paymentRepository;
     private final SeatRepository seatRepository;
     private final QueueRepository queueRepository;
+    private final DeductBalanceUseCase deductBalanceUseCase;
 
 
-    public PaymentProcessingUseCase(PaymentRepository paymentRepository, SeatRepository seatRepository, QueueRepository queueRepository) {
+    public PaymentProcessingUseCase(PaymentRepository paymentRepository, SeatRepository seatRepository, QueueRepository queueRepository, DeductBalanceUseCase deductBalanceUseCase) {
         this.paymentRepository = paymentRepository;
         this.seatRepository = seatRepository;
         this.queueRepository = queueRepository;
+        this.deductBalanceUseCase = deductBalanceUseCase;
     }
 
     @Transactional
     public PaymentOutput processPayment(PaymentInput paymentInput) {
 
+        // 1. 좌석 조회 및 상태 확인
         Seat seat = seatRepository.findById(paymentInput.getSeatId())
                 .orElseThrow(() -> new NoSuchElementException("좌석을 찾을 수 없습니다."));
 
@@ -37,17 +41,19 @@ public class PaymentProcessingUseCase {
             throw new IllegalStateException("좌석은 이미 예약된 상태입니다.");
         }
 
-        long price = seat.getAmount();
+        // 2. 유저 조회 및 잔액 차감
+        ChargeOutput chargeOutput = deductBalanceUseCase.deductBalance(paymentInput.getUserId(), seat.getAmount());
 
-        // 결제 정보 생성
-        Payment payment = new Payment(paymentInput.getUserId(), paymentInput.getSeatId(), price, "COMPLETED");
 
+        // 3. 결제 정보 생성 및 저장
+        Payment payment = new Payment(paymentInput.getUserId(), paymentInput.getSeatId(), seat.getAmount(), "COMPLETED");
         Payment savedPayment = paymentRepository.save(payment);
 
+        // 4. 좌석 상태 변경
         seat.setSeatStatus("OCCUPIED");
         seatRepository.save(seat);
 
-        // 대기열 토큰 만료
+        // 5. 대기열 토큰 만료
         Queue queue = queueRepository.findByUserIdAndStatus(payment.getUserId(), "ACTIVE")
                 .orElseThrow(() -> new NoSuchElementException("대기열 항목을 찾을 수 없습니다."));
         queue.setStatus("EXPIRED");
