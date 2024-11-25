@@ -30,3 +30,19 @@ spring:
           max-active: 10
           max-idle: 5
           min-idle: 1
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: PAYMENT-CONSUMER-GROUP
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      topic:
+        payment-success: payment-notification
+        payment-fail: payment-notification.DLQ
+        payment-fail-permanent: payment-notification.DLQ.permanent
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
