@@ -1,15 +1,5 @@
 # 콘서트 예약 서비스
 ---
-Swagger를 이용한 API 명세
-
-<img width="1130" alt="api_specs1" src="https://github.com/user-attachments/assets/214f06b2-e0e8-4e90-83fd-f0b6b67c0ec7">
-<img width="1121" alt="api_specs2" src="https://github.com/user-attachments/assets/2793aa59-6425-4f2e-8b84-0e1751826f40">
-<img width="1144" alt="api_specs3" src="https://github.com/user-attachments/assets/e557148e-9d72-4d16-ab75-2fbeded10862">
-<img width="1134" alt="api_specs4" src="https://github.com/user-attachments/assets/6e7b912b-28a9-48c8-a362-005083fdfd14">
-<img width="1117" alt="api_specs5" src="https://github.com/user-attachments/assets/a051c1b8-eb5f-4376-ba99-17a084cf7981">
-
-
----
 ### **`STEP 05`**
 
 - 시나리오 선정 및 프로젝트 Milestone 제출
@@ -33,3 +23,10 @@ Swagger를 이용한 API 명세
 - [API 명세](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/api_specs.md)
 - [Swagger를 이용한 API 명세](https://github.com/JEONGBEOMKO/hhplus-concert/tree/main/hhplus-concert/src/docs/swagger)
 - [패키지 구조 설계](https://github.com/JEONGBEOMKO/hhplus-concert/blob/main/hhplus-concert/src/docs/architecture.md)
+---
+Swagger를 이용한 API 명세
+
+<img width="1121" alt="api_specs2" src="https://github.com/user-attachments/assets/2793aa59-6425-4f2e-8b84-0e1751826f40">
+<img width="1144" alt="api_specs3" src="https://github.com/user-attachments/assets/e557148e-9d72-4d16-ab75-2fbeded10862">
+<img width="1134" alt="api_specs4" src="https://github.com/user-attachments/assets/6e7b912b-28a9-48c8-a362-005083fdfd14">
+<img width="1117" alt="api_specs5" src="https://github.com/user-attachments/assets/a051c1b8-eb5f-4376-ba99-17a084cf7981">
